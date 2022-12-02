@@ -19,6 +19,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSelectModule} from '@angular/material/select';
 import { LoginComponent } from "../../login/login.component";
 import { MatCardModule } from "@angular/material/card";
+import { InteretComponent } from '../../interet/interet.component';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { MatCardModule } from "@angular/material/card";
     MapsComponent,
     NotificationsComponent,
     UpgradeComponent,
-    LoginComponent
+    LoginComponent,
+    InteretComponent
   ]
 })
 
