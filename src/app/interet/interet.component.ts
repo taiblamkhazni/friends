@@ -1,6 +1,6 @@
 import { InteretInterface } from "../interfaces/interet.interface";
 import { Component, OnInit } from "@angular/core";
-import { FormGroup, UntypedFormControl, Validators } from "@angular/forms";
+
 import { InteretService } from "app/services/interet.service";
 
 @Component({
