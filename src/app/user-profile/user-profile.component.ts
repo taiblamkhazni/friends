@@ -1,27 +1,24 @@
 import { InteretInterface } from "./../Interfaces/Interet.interface";
 
-import { Component, OnInit } from "@angular/core";
+import { Component, DoCheck, OnInit } from "@angular/core";
 
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { UserviewInterface } from "../Interfaces/userview.interface";
 import { UserInterface } from "../Interfaces/User.interface";
 import { UsersService } from "../Services/users.service";
 import { InteretService } from "../Services/interet.service";
-import { getisAdmin, getUserIdStorage } from "../partage/storageLocal";
+import { getisAdmin } from "../partage/storageLocal";
+
+import { NgxSpinnerService } from "ngx-spinner";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-user-profile",
   templateUrl: "./user-profile.component.html",
   styleUrls: ["./user-profile.component.css"],
 })
-export class UserProfileComponent implements OnInit {
-  /*  users: UserInterface[] = [];
-  
-  interests: InteretInterface[] = [];
-  
-   */
-
+export class UserProfileComponent implements OnInit, DoCheck {
   userview: UserviewInterface[] = [];
   userForm: UserInterface;
   $interets: InteretInterface[] = [];
@@ -29,31 +26,51 @@ export class UserProfileComponent implements OnInit {
   isadmin: boolean;
   image: any;
   selectedFiles: any;
+  firstName: string;
+  lastName: string;
 
   constructor(
     private _usersService: UsersService,
     private route: ActivatedRoute,
-    private interetService: InteretService
+    private interetService: InteretService,
+    private spinner: NgxSpinnerService,
+    private _sanitizer: DomSanitizer
   ) {}
+  ngDoCheck(): void {
+    if (this.userForm) {
+      this.firstName = this.userForm.firstName;
+      this.lastName = this.userForm.lastName;
+      //this.image = this.lastName + "" + this.firstName;
+    }
+  }
 
   ngOnInit() {
     this.isadmin = getisAdmin();
     this.getAllInterets();
     this.getuserById(this.route.snapshot.params["id"]);
-    this.getImageUser();
   }
 
   saveUser = () => {
+    this.spinner.show();
     this.userForm.interestsIds = this.toppings;
-
+    this.userForm.lastName = this.lastName;
+    this.userForm.firstName = this.firstName;
     this._usersService
       .updateUser(this.userForm.id, this.userForm)
       .subscribe((res) => {});
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 5000);
   };
 
   getuserById = (id: number) => {
     this._usersService.getUserById(id).subscribe((res) => {
       this.userForm = res;
+      if (this.userForm) {
+        this.firstName = this.userForm.firstName;
+        this.lastName = this.userForm.lastName;
+        this.getImage();
+      }
       this.toppings = this.userForm.interests.map((i) => {
         return i.id;
       });
@@ -68,13 +85,12 @@ export class UserProfileComponent implements OnInit {
       (res) => {
         this.$interets = res;
       },
-      (error) => {
-        //alertMessage(0, error, 'error');
-      }
+      (error) => {}
     );
   };
 
   delateAmi(user) {
+    this.spinner.show();
     this.userForm.friendsIds = this.userForm.friendsIds.filter((u) => {
       if (u != user.id) {
         return u;
@@ -85,37 +101,42 @@ export class UserProfileComponent implements OnInit {
       .subscribe((res) => {
         this.getuserById(this.userForm.id);
       });
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 1000);
   }
 
   upload(event) {
     this.selectedFiles = event.target.files;
-    console.log(this.selectedFiles[0].name);
-    /* const split = this.selectedFiles[0].name.split(".");
-    this.selectedFiles[0].name =
-      this.userForm.lastName + "" + this.userForm.firstName + split[1]; */
+
     if (this.selectedFiles.length === 0) return;
 
     const formData = new FormData();
 
     for (const file of this.selectedFiles) {
       formData.append(file.name, file);
-      /*   formData.append(
+      formData.append(
         "name",
         this.userForm.lastName + "" + this.userForm.firstName
-      ); */
+      );
     }
 
-    /*   this._usersService.sendImage(formData).subscribe((res) => {
-      console.log(res);
-    }); */
+    this._usersService.sendImage(formData).subscribe((res) => {
+      this.spinner.show();
+      //this.getuserById(this.userForm.id);
+      this.selectedFiles = "";
+      this.getImage();
+      setTimeout(() => {
+        this.spinner.hide();
+      }, 3000);
+    });
   }
-
-  getImageUser = () => {
+  getImage = () => {
     this._usersService
-      .getImage(getUserIdStorage().toString())
+      .getImage(this.lastName + this.firstName)
       .subscribe((res) => {
-        console.log(res);
-        //this.image = res;
+        //console.log(res.content);
+        this.image = res.content;
       });
   };
 }

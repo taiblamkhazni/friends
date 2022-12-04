@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { FileInterface } from "app/interfaces/fileInterface";
 import { UserInterface } from "app/interfaces/user.interface";
 import { getToken } from "app/partage/storageLocal";
 import { Observable } from "rxjs";
@@ -57,8 +58,8 @@ export class UsersService {
     );
   };
 
-  getImage = (name: string): Observable<any> => {
-    return this.http.get<any>(
+  getImage = (name: string): Observable<FileInterface> => {
+    return this.http.get<FileInterface>(
       "https://localhost:7001/api/Files/" + name,
       this.httpOptions
     );

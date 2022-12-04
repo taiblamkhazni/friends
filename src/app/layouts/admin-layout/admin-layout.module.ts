@@ -17,6 +17,7 @@ import { LoginComponent } from "../../login/login.component";
 import { MatCardModule } from "@angular/material/card";
 import { InteretComponent } from "../../interet/interet.component";
 import { MatIconModule } from "@angular/material/icon";
+import { NgxSpinnerModule } from "ngx-spinner";
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import { MatIconModule } from "@angular/material/icon";
     MatTooltipModule,
     MatCardModule,
     MatIconModule,
+    NgxSpinnerModule,
   ],
   declarations: [
     UserProfileComponent,
