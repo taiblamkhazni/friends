@@ -23,6 +23,7 @@ export class TableListComponent implements OnInit {
     birthDate: "",
     password: "",
   };
+  image: string = null;
 
   constructor(private _usersService: UsersService) {}
 
@@ -67,12 +68,6 @@ export class TableListComponent implements OnInit {
       });
   };
 
-  /* getuserById = () => {
-    var id = getUserIdStorage();
-    this._usersService.getUserById(id).subscribe((res) => {
-      this.user = res;
-    });
-  }; */
   newUser = () => {
     this.submitted = !this.submitted;
   };
@@ -111,6 +106,16 @@ export class TableListComponent implements OnInit {
             });
           });
         });
+        this.$users.map((u) => {
+          this._usersService
+            .getImage(u.lastName + u.firstName)
+            .subscribe((res) => {
+              if (res.content != "") {
+                u.image = res.content;
+              }
+            });
+        });
+        console.log(this.$users);
       },
       (error) => {
         console.log(error);

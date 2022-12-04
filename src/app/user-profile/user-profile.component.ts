@@ -1,8 +1,8 @@
 import { InteretInterface } from "./../Interfaces/Interet.interface";
 
-import { Component, DoCheck, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 
 import { UserviewInterface } from "../Interfaces/userview.interface";
 import { UserInterface } from "../Interfaces/User.interface";
@@ -11,20 +11,19 @@ import { InteretService } from "../Services/interet.service";
 import { getisAdmin } from "../partage/storageLocal";
 
 import { NgxSpinnerService } from "ngx-spinner";
-import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-user-profile",
   templateUrl: "./user-profile.component.html",
   styleUrls: ["./user-profile.component.css"],
 })
-export class UserProfileComponent implements OnInit, DoCheck {
+export class UserProfileComponent implements OnInit {
   userview: UserviewInterface[] = [];
   userForm: UserInterface;
   $interets: InteretInterface[] = [];
   toppings: number[];
   isadmin: boolean;
-  image: any;
+  image: string = null;
   selectedFiles: any;
   firstName: string;
   lastName: string;
@@ -33,16 +32,8 @@ export class UserProfileComponent implements OnInit, DoCheck {
     private _usersService: UsersService,
     private route: ActivatedRoute,
     private interetService: InteretService,
-    private spinner: NgxSpinnerService,
-    private _sanitizer: DomSanitizer
+    private spinner: NgxSpinnerService
   ) {}
-  ngDoCheck(): void {
-    if (this.userForm) {
-      this.firstName = this.userForm.firstName;
-      this.lastName = this.userForm.lastName;
-      //this.image = this.lastName + "" + this.firstName;
-    }
-  }
 
   ngOnInit() {
     this.isadmin = getisAdmin();
@@ -135,8 +126,9 @@ export class UserProfileComponent implements OnInit, DoCheck {
     this._usersService
       .getImage(this.lastName + this.firstName)
       .subscribe((res) => {
-        //console.log(res.content);
-        this.image = res.content;
+        if (res.content != "") {
+          this.image = res.content;
+        }
       });
   };
 }

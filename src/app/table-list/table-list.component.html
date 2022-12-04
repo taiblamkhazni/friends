@@ -127,19 +127,30 @@
                   <tr *ngFor="let user of $users">
                     <td>
                       <div class="card-avatar">
-                        <a href="javascript:void(0)">
-                          <img
-                            class="img"
-                            src="./assets/img/faces/marc.jpg"
-                            style="
-                              border-radius: 50%;
-                              overflow: hidden;
-                              padding: 0;
-                              width: 60px;
-                              height: auto;
-                            "
-                          />
-                        </a>
+                        <img
+                          *ngIf="user.image != null"
+                          class="img"
+                          src="data:image/*;base64,{{ user.image }}"
+                          style="
+                            border-radius: 50%;
+                            overflow: hidden;
+                            padding: 0;
+                            width: 60px;
+                            height: auto;
+                          "
+                        />
+                        <img
+                          *ngIf="user.image == null"
+                          class="img"
+                          src="./assets/img/faces/marc.jpg"
+                          style="
+                            border-radius: 50%;
+                            overflow: hidden;
+                            padding: 0;
+                            width: 60px;
+                            height: auto;
+                          "
+                        />
                       </div>
                     </td>
                     <td>{{ user.lastName }}</td>

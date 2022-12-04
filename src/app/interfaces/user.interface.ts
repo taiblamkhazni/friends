@@ -14,4 +14,5 @@ export interface UserInterface {
   interestsIds?: number[];
   friends?: UserviewInterface[];
   friendsIds?: number[];
+  image?: string;
 }
